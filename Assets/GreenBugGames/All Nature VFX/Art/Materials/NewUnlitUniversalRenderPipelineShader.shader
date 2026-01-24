@@ -14,12 +14,15 @@ Shader "Custom/URP/CoolGoldOrbWithHaloUnlit"
         _NoiseScale  ("Noise Scale", Range(0.5,20)) = 5
         _NoiseAmount ("Noise Amount", Range(0,1)) = 0.4
 
-        // NEW: outside swirling frame/halo controls
+        // Outside swirling frame/halo controls
         _HaloIntensity ("Halo Intensity", Range(0,20)) = 10
         _HaloWidth     ("Halo Width", Range(0.01,0.8)) = 0.18
         _HaloSoftness  ("Halo Softness", Range(0.001,0.5)) = 0.08
         _HaloSwirlFreq ("Halo Swirl Frequency", Range(1,20)) = 10
         _HaloSwirlSpeed("Halo Swirl Speed", Range(0,10)) = 2.2
+
+        // NEW: 0..1 slider controlling overall effect brightness
+        _Brightness ("Effect Brightness", Range(0,1)) = 1
 
         _Alpha       ("Alpha", Range(0,1)) = 1
     }
@@ -66,6 +69,8 @@ Shader "Custom/URP/CoolGoldOrbWithHaloUnlit"
                 float  _HaloSoftness;
                 float  _HaloSwirlFreq;
                 float  _HaloSwirlSpeed;
+
+                float  _Brightness; // 0..1
 
                 float  _Alpha;
             CBUFFER_END
@@ -151,35 +156,40 @@ Shader "Custom/URP/CoolGoldOrbWithHaloUnlit"
                 // Inner swirl/energy
                 float angle = atan2(cUV.y, cUV.x);
                 float swirl = sin(angle * 3.0 + t * _SwirlSpeed) * 0.5 + 0.5;
-                float n = fbm(IN.uv * _NoiseScale + float2(t * 0.4, t * -0.3));
+
+                // NOTE: _SwirlScale affects pattern frequency; keep it in the UV space.
+                float2 uvScaled = IN.uv * _SwirlScale;
+
+                float n = fbm(uvScaled * _NoiseScale + float2(t * 0.4, t * -0.3));
                 float energy = saturate(lerp(swirl, n, _NoiseAmount));
 
                 // Pulse
                 float pulse = sin(t * _PulseSpeed) * 0.5 + 0.5;
                 pulse = lerp(0.8, 1.4, pulse);
 
-                // ---------- NEW: OUTER SWIRLING HALO ----------
-                // Create a ring near the edge. dist ~ 1 at edge.
-                float ringCenter = 1.0 - _HaloWidth;                      // where ring begins inward
+                // ---------- OUTER SWIRLING HALO ----------
+                float ringCenter = 1.0 - _HaloWidth;
                 float ring = smoothstep(ringCenter - _HaloSoftness, ringCenter, dist) *
-                             (1.0 - smoothstep(1.0 - _HaloSoftness, 1.0, dist)); // fade out at very edge
+                             (1.0 - smoothstep(1.0 - _HaloSoftness, 1.0, dist));
 
-                // Animated swirl pattern traveling around the ring
                 float haloWave = sin(angle * _HaloSwirlFreq + t * _HaloSwirlSpeed) * 0.5 + 0.5;
-
-                // Break it up a bit so it looks like moving energy strands
                 float haloNoise = fbm(float2(angle * 2.0, dist * 6.0) + float2(t * 0.9, t * 0.2));
                 float haloStrands = saturate(lerp(haloWave, haloNoise, 0.55));
 
-                float halo = ring * haloStrands * (0.4 + rim); // tie it to rim so it frames the orb
+                float halo = ring * haloStrands * (0.4 + rim);
 
                 // Combine masks
                 float glowMask = saturate(core * 1.2 + rim * 1.2 + energy * 0.8);
 
-                float3 col =
-                    _BaseColor.rgb * (0.3 + core) +
-                    _GlowColor.rgb * glowMask * _Intensity * pulse +
-                    _GlowColor.rgb * halo * _HaloIntensity;
+                // Color build
+                float3 baseCol = _BaseColor.rgb * (0.3 + core);
+                float3 fxCol =
+                    (_GlowColor.rgb * glowMask * _Intensity * pulse) +
+                    (_GlowColor.rgb * halo * _HaloIntensity);
+
+                // NEW: 0..1 slider controls the effect brightness (glow + halo),
+                // while leaving the base visible.
+                float3 col = baseCol + fxCol * _Brightness;
 
                 float alpha = saturate(_Alpha * (0.35 + core + rim + halo));
 
@@ -189,4 +199,3 @@ Shader "Custom/URP/CoolGoldOrbWithHaloUnlit"
         }
     }
 }
-
