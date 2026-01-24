@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_NewUnlitUniversalRenderPipelineShader
+  m_Name: Purple Orb
   m_Shader: {fileID: 4800000, guid: a074adc4a42494eb7a3164453ab7aebf, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -51,6 +51,6 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
-    - _GlowColor: {r: 1, g: 0.20000018, b: 0.19999999, a: 1}
+    - _GlowColor: {r: 1, g: 0.19999999, b: 0.931654, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
