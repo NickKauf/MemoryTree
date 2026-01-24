@@ -4,7 +4,11 @@ using Meta.XR.MRUtilityKit;
 public class PlaceOnTable : MonoBehaviour
 {
     public GameObject objectToPlace; // Drag your primitive/tree here
-    public float heightOffset = 0.1f; // Small offset above table surface
+    
+    [Header("Position Offsets")]
+    public float xOffset = 0f; // Left/Right
+    public float heightOffset = 0.1f; // Up/Down (Y axis)
+    public float zOffset = 0f; // Forward/Back
 
     void Start()
     {
@@ -36,14 +40,18 @@ public class PlaceOnTable : MonoBehaviour
 
         if (tableAnchor != null)
         {
-            // Place on center of table
+            // Get table center position
             Vector3 tableCenter = tableAnchor.transform.position;
-            tableCenter.y += heightOffset; // Slightly above surface
             
-            objectToPlace.transform.position = tableCenter;
+            // Apply offsets relative to table orientation
+            Vector3 offset = tableAnchor.transform.right * xOffset +
+                           Vector3.up * heightOffset +
+                           tableAnchor.transform.forward * zOffset;
+            
+            objectToPlace.transform.position = tableCenter + offset;
             objectToPlace.transform.rotation = tableAnchor.transform.rotation;
             
-            Debug.Log($"Object placed on table at: {tableCenter}");
+            Debug.Log($"Object placed on table at: {tableCenter + offset}");
         }
         else
         {
