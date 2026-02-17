@@ -2511,7 +2511,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1906722871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3149,6 +3149,10 @@ PrefabInstance:
     - target: {fileID: 8365267381084269852, guid: a9ae52275a21fe545ad892747e9c8e57, type: 3}
       propertyPath: m_Name
       value: Orb
+      objectReference: {fileID: 0}
+    - target: {fileID: 8365267381084269852, guid: a9ae52275a21fe545ad892747e9c8e57, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

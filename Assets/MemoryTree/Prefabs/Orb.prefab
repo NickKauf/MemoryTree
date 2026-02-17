@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 6895303465751016704}
   - component: {fileID: 6482852777008181890}
   - component: {fileID: 2275193731183401379}
+  - component: {fileID: 1669170981846200290}
   m_Layer: 0
   m_Name: Orb
   m_TagString: Untagged
@@ -262,3 +263,16 @@ MonoBehaviour:
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
   _forceKinematicDisabled: 0
+--- !u!114 &1669170981846200290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8365267381084269852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bff2df06bbf0041bd7ca70bee77953, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OrbInteractable
+  handGrabInteractable: {fileID: 5548090062643898294}
