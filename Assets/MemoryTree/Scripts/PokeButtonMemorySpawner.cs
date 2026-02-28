@@ -13,6 +13,7 @@ public class PokeButtonMemorySpawner : MonoBehaviour
     [Header("Button Reference")]
     public PokeInteractable pokeButton; // The button's PokeInteractable component
     
+    private bool orbSpawned = false; // To prevent multiple spawns from one poke    
     void Start()
     {
         // Listen for button pokes
@@ -39,10 +40,16 @@ public class PokeButtonMemorySpawner : MonoBehaviour
     {
         if (memoryPrefabs.Length == 0)
         {
-            Debug.LogWarning("No memory prefabs assigned!");
+            Debug.LogWarning("No memory prefabs assigned! And Orb has already spawn");
             return;
         }
-        
+
+        // Prevent spawning if already spawned
+        if (orbSpawned)
+        {
+            Debug.LogWarning("Orb already spawned! Cannot spawn another.");
+            return;
+        }
         // Pick random prefab
         int randomIndex = Random.Range(0, memoryPrefabs.Length);
         GameObject prefabToSpawn = memoryPrefabs[randomIndex];
@@ -53,7 +60,8 @@ public class PokeButtonMemorySpawner : MonoBehaviour
             transform.position + Vector3.up * spawnHeight;
         
         GameObject newMemory = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
-        
+        orbSpawned = true;
+
         Debug.Log($"Spawned {prefabToSpawn.name}");
     }
     

@@ -1,160 +1,64 @@
-using UnityEngine;
-using TMPro;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class OrbInteractable : MonoBehaviour
 {
-    [Header("Grab Detection")]
-    [SerializeField]
-    private HandGrabInteractable handGrabInteractable;
+    [SerializeField] private HandGrabInteractable handGrabInteractable;
+    public bool isOrbGrabbed = false;
+    private bool grabEventFired = false; // Prevent duplicate event firing
 
-    [Header("UI Canvas")]
-    [SerializeField]
-    private GameObject recordingCanvas;
-
-    [SerializeField]
-    private TextMeshProUGUI recordingStatusText;
-
-    [SerializeField]
-    private float canvasDistance = 0.3f;
-
-    [SerializeField]
-    private float canvasDropDistance = 0.3f;
-
-    private Camera mainCamera;
-    private bool isOrbGrabbed = false;
-
-    void Start()
+    private void Awake()
     {
-        mainCamera = Camera.main;
-
-        // If canvas isn't assigned, try to find it as a child
-        if (recordingCanvas == null)
+        // Auto-assign if you forget to drag it into the inspector
+        if (handGrabInteractable == null)
         {
-            Canvas canvasComponent = GetComponentInChildren<Canvas>();
-            if (canvasComponent != null)
-            {
-                recordingCanvas = canvasComponent.gameObject;
-            }
+            handGrabInteractable = GetComponent<HandGrabInteractable>();
         }
+    }
 
-        // If text isn't assigned, try to find it in canvas children
-        if (recordingStatusText == null && recordingCanvas != null)
-        {
-            recordingStatusText = recordingCanvas.GetComponentInChildren<TextMeshProUGUI>();
-        }
-
+    private void OnEnable()
+    {
         if (handGrabInteractable != null)
         {
             handGrabInteractable.WhenPointerEventRaised += OnGrabEvent;
         }
-        else
-        {
-            Debug.LogError("HandGrabInteractable not assigned!");
-        }
-
-        if (recordingCanvas == null)
-        {
-            Debug.LogWarning("Recording canvas not found as child or assigned!");
-        }
-        else
-        {
-            recordingCanvas.SetActive(false);
-        }
-
-        if (recordingStatusText == null)
-        {
-            Debug.LogWarning("Recording status text not found!");
-        }
-
-        // Pass text reference to VoiceRecorder
-        VoiceRecorder voiceRecorder = GetComponent<VoiceRecorder>();
-        if (voiceRecorder != null)
-        {
-            voiceRecorder.SetStatusText(recordingStatusText);
-        }
     }
 
-    void Update()
+    private void OnDisable()
     {
-        // Keep canvas in front of user if orb is grabbed
-        if (isOrbGrabbed && recordingCanvas != null && recordingCanvas.activeSelf)
+        if (handGrabInteractable != null)
         {
-            PositionCanvasInFrontOfUser();
+            handGrabInteractable.WhenPointerEventRaised -= OnGrabEvent;
         }
     }
 
     void OnGrabEvent(PointerEvent evt)
     {
+        // 'Select' indicates a successful grab
         if (evt.Type == PointerEventType.Select)
         {
-            isOrbGrabbed = true;
-            Debug.Log($"✓ Orb grabbed! Grab ID: {evt.Identifier}");
-            ShowRecordingCanvas();
-        }
-        //else if (evt.Type == PointerEventType.Unselect)
-        //{
-        //    isOrbGrabbed = false;
-        //    Debug.Log($"✗ Orb released!");
-        //    HideRecordingCanvas();
-        //}
-    }
-
-    void ShowRecordingCanvas()
-    {
-        if (recordingCanvas != null)
-        {
-            recordingCanvas.SetActive(true);
-            PositionCanvasInFrontOfUser();
-
-            // Update text
-            if (recordingStatusText != null)
+            // Only fire event if it hasn't fired already
+            if (!grabEventFired)
             {
-                recordingStatusText.text = "Press to Record";
+                isOrbGrabbed = true;
+                grabEventFired = true; // Mark event as fired
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.onOrbGrabbed.Invoke();
+                }
+
+                Debug.Log($"✓ Orb grabbed! Grab ID: {evt.Identifier}");
             }
-
-            Debug.Log($"Recording canvas shown for {gameObject.name}");
         }
-    }
-
-    void HideRecordingCanvas()
-    {
-        if (recordingCanvas != null)
+        // Reset when grab ends
+        else if (evt.Type == PointerEventType.Unselect)
         {
-            recordingCanvas.SetActive(false);
-
-            // Reset text
-            if (recordingStatusText != null)
-            {
-                recordingStatusText.text = "";
-            }
-
-            Debug.Log($"Recording canvas hidden for {gameObject.name}");
-        }
-    }
-
-    void PositionCanvasInFrontOfUser()
-    {
-        if (mainCamera == null || recordingCanvas == null)
-            return;
-
-        // Position canvas in front of camera and lower
-        Vector3 targetPosition = mainCamera.transform.position +
-                                 mainCamera.transform.forward * canvasDistance +
-                                 Vector3.down * canvasDropDistance;
-        recordingCanvas.transform.position = targetPosition;
-
-        // Make canvas face away from camera (180 degree rotation)
-        recordingCanvas.transform.LookAt(mainCamera.transform.position);
-        recordingCanvas.transform.Rotate(0, 180, 0);
-    }
-
-    void OnDestroy()
-    {
-        if (handGrabInteractable != null)
-        {
-            handGrabInteractable.WhenPointerEventRaised -= OnGrabEvent;
+            isOrbGrabbed = false;
+            grabEventFired = false; // Reset for next grab
+            Debug.Log($"✗ Orb released!");
         }
     }
 }

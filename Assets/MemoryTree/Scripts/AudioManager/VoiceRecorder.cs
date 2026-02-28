@@ -4,13 +4,10 @@ using TMPro;
 public class VoiceRecorder : MonoBehaviour
 {
     [Header("Recording Settings")]
-    [SerializeField]
-    private int sampleRate = 44100;
-
-    [SerializeField]
-    private float maxRecordingDuration = 60f;
-
+    [SerializeField] private int sampleRate = 44100;
+    [SerializeField] private float maxRecordingDuration = 60f;
     [SerializeField] private TextMeshProUGUI recordingStatusText;
+
     private AudioSource audioSource;
     private bool isRecording = false;
     private float recordingTimer = 0f;
@@ -18,7 +15,6 @@ public class VoiceRecorder : MonoBehaviour
 
     void Start()
     {
-        // Get or create AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -32,14 +28,12 @@ public class VoiceRecorder : MonoBehaviour
         {
             recordingTimer += Time.deltaTime;
 
-            // Update timer display
             if (recordingStatusText != null)
             {
                 int seconds = (int)recordingTimer;
                 recordingStatusText.text = $"Recording... {seconds}s";
             }
 
-            // Auto-stop if max duration reached
             if (recordingTimer >= maxRecordingDuration)
             {
                 StopRecording();
@@ -48,16 +42,14 @@ public class VoiceRecorder : MonoBehaviour
     }
 
     /// <summary>
-    /// Set the status text reference (called by OrbInteractable).
+    /// Connect this to your UI Button's OnClick event!
     /// </summary>
-    public void SetStatusText(TextMeshProUGUI statusText)
+    public void ToggleRecording()
     {
-        recordingStatusText = statusText;
+        if (isRecording) StopRecording();
+        else StartRecording();
     }
 
-    /// <summary>
-    /// Starts recording voice input.
-    /// </summary>
     public void StartRecording()
     {
         if (isRecording)
@@ -66,13 +58,9 @@ public class VoiceRecorder : MonoBehaviour
             return;
         }
 
-        // Stop any previous recording
         Microphone.End(null);
-
         isRecording = true;
         recordingTimer = 0f;
-
-        // Start microphone recording
         currentRecording = Microphone.Start(null, false, (int)maxRecordingDuration, sampleRate);
 
         if (recordingStatusText != null)
@@ -83,9 +71,6 @@ public class VoiceRecorder : MonoBehaviour
         Debug.Log("✓ Voice recording started");
     }
 
-    /// <summary>
-    /// Stops recording and saves the audio clip.
-    /// </summary>
     public void StopRecording()
     {
         if (!isRecording)
@@ -95,8 +80,6 @@ public class VoiceRecorder : MonoBehaviour
         }
 
         isRecording = false;
-
-        // Stop microphone
         Microphone.End(null);
 
         if (recordingStatusText != null)
@@ -105,41 +88,19 @@ public class VoiceRecorder : MonoBehaviour
         }
 
         Debug.Log($"✗ Voice recording stopped. Duration: {recordingTimer:F2}s");
-        Debug.Log($"Audio clip saved: {currentRecording.name}");
 
-        // Invoke callback or event here if needed
+        if (currentRecording != null)
+            Debug.Log($"Audio clip saved: {currentRecording.name}");
+
         OnRecordingSaved();
     }
 
-    /// <summary>
-    /// Called when recording is saved.
-    /// </summary>
     void OnRecordingSaved()
     {
-        // Custom logic here
+        // Add logic here to process the audio (e.g., send to API, play back)
     }
 
-    /// <summary>
-    /// Returns the current recording audio clip.
-    /// </summary>
-    public AudioClip GetCurrentRecording()
-    {
-        return currentRecording;
-    }
-
-    /// <summary>
-    /// Returns whether currently recording.
-    /// </summary>
-    public bool IsRecording()
-    {
-        return isRecording;
-    }
-
-    /// <summary>
-    /// Get recording duration in seconds.
-    /// </summary>
-    public float GetRecordingDuration()
-    {
-        return recordingTimer;
-    }
+    public AudioClip GetCurrentRecording() => currentRecording;
+    public bool IsRecording() => isRecording;
+    public float GetRecordingDuration() => recordingTimer;
 }
