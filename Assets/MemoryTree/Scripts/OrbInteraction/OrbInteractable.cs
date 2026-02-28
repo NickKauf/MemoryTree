@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 
@@ -13,10 +14,13 @@ public class OrbInteractable : MonoBehaviour
     private GameObject recordingCanvas;
 
     [SerializeField]
+    private TextMeshProUGUI recordingStatusText;
+
+    [SerializeField]
     private float canvasDistance = 0.3f;
 
     [SerializeField]
-    private float canvasDropDistance = 0.3f; // How far down from eye level
+    private float canvasDropDistance = 0.3f;
 
     private Camera mainCamera;
     private bool isOrbGrabbed = false;
@@ -35,6 +39,12 @@ public class OrbInteractable : MonoBehaviour
             }
         }
 
+        // If text isn't assigned, try to find it in canvas children
+        if (recordingStatusText == null && recordingCanvas != null)
+        {
+            recordingStatusText = recordingCanvas.GetComponentInChildren<TextMeshProUGUI>();
+        }
+
         if (handGrabInteractable != null)
         {
             handGrabInteractable.WhenPointerEventRaised += OnGrabEvent;
@@ -51,6 +61,18 @@ public class OrbInteractable : MonoBehaviour
         else
         {
             recordingCanvas.SetActive(false);
+        }
+
+        if (recordingStatusText == null)
+        {
+            Debug.LogWarning("Recording status text not found!");
+        }
+
+        // Pass text reference to VoiceRecorder
+        VoiceRecorder voiceRecorder = GetComponent<VoiceRecorder>();
+        if (voiceRecorder != null)
+        {
+            voiceRecorder.SetStatusText(recordingStatusText);
         }
     }
 
@@ -71,12 +93,12 @@ public class OrbInteractable : MonoBehaviour
             Debug.Log($"✓ Orb grabbed! Grab ID: {evt.Identifier}");
             ShowRecordingCanvas();
         }
-        else if (evt.Type == PointerEventType.Unselect)
-        {
-            isOrbGrabbed = false;
-            Debug.Log($"✗ Orb released!");
-            HideRecordingCanvas();
-        }
+        //else if (evt.Type == PointerEventType.Unselect)
+        //{
+        //    isOrbGrabbed = false;
+        //    Debug.Log($"✗ Orb released!");
+        //    HideRecordingCanvas();
+        //}
     }
 
     void ShowRecordingCanvas()
@@ -85,6 +107,13 @@ public class OrbInteractable : MonoBehaviour
         {
             recordingCanvas.SetActive(true);
             PositionCanvasInFrontOfUser();
+
+            // Update text
+            if (recordingStatusText != null)
+            {
+                recordingStatusText.text = "Press to Record";
+            }
+
             Debug.Log($"Recording canvas shown for {gameObject.name}");
         }
     }
@@ -94,6 +123,13 @@ public class OrbInteractable : MonoBehaviour
         if (recordingCanvas != null)
         {
             recordingCanvas.SetActive(false);
+
+            // Reset text
+            if (recordingStatusText != null)
+            {
+                recordingStatusText.text = "";
+            }
+
             Debug.Log($"Recording canvas hidden for {gameObject.name}");
         }
     }
@@ -121,4 +157,4 @@ public class OrbInteractable : MonoBehaviour
             handGrabInteractable.WhenPointerEventRaised -= OnGrabEvent;
         }
     }
-}       
+}

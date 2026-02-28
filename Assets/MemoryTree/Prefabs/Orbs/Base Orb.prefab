@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8841067156364611853}
   - component: {fileID: 7043937595058841871}
   - component: {fileID: 7636065531009962287}
+  - component: {fileID: 5327587453400794911}
   m_Layer: 0
   m_Name: Base Orb
   m_TagString: Untagged
@@ -181,8 +182,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbInteractable
   handGrabInteractable: {fileID: 7264805163970028346}
   recordingCanvas: {fileID: 3735948425108969821}
+  recordingStatusText: {fileID: 5770750301549243782}
   canvasDistance: 0.5
   canvasDropDistance: 0.3
+--- !u!114 &5327587453400794911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3225567704452940718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18fa44b89864b1f4a8199d965696cff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceRecorder
+  sampleRate: 44100
+  maxRecordingDuration: 60
+  recordingStatusText: {fileID: 5770750301549243782}
 --- !u!1 &5846915196988230898
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,6 +356,10 @@ PrefabInstance:
     - target: {fileID: 1850265973532205408, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337543590936296281, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
+      propertyPath: m_Name
+      value: Record Label
       objectReference: {fileID: 0}
     - target: {fileID: 3034712079244644430, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -510,6 +531,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 197337650987297336, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
   m_PrefabInstance: {fileID: 3559485002446320485}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5770750301549243782 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7021118498306170595, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
+  m_PrefabInstance: {fileID: 3559485002446320485}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8635849060254732621 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5097342739670589992, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
