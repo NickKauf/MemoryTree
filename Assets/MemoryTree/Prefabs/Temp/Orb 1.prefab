@@ -111,9 +111,9 @@ GameObject:
   - component: {fileID: 6895303465751016704}
   - component: {fileID: 6482852777008181890}
   - component: {fileID: 2275193731183401379}
-  - component: {fileID: 1669170981846200290}
+  - component: {fileID: 3712838715282170799}
   m_Layer: 0
-  m_Name: Orb
+  m_Name: Orb 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,7 +168,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9f432844b62029440a6deb6ddd9fac33, type: 2}
+  - {fileID: 2100000, guid: 5dcb946ce519ec74fb35e27b38239aff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -263,7 +263,7 @@ MonoBehaviour:
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
   _forceKinematicDisabled: 0
---- !u!114 &1669170981846200290
+--- !u!114 &3712838715282170799
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -276,3 +276,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbInteractable
   handGrabInteractable: {fileID: 5548090062643898294}
+  recordingCanvas: {fileID: 197337650987297336, guid: 711506b7c9519d64eadc8b942bb84ec8, type: 3}
+  canvasDistance: 0.5
