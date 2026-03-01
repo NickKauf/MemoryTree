@@ -53,12 +53,12 @@ public class OrbInteractable : MonoBehaviour
                 Debug.Log($"✓ Orb grabbed! Grab ID: {evt.Identifier}");
             }
         }
-        // Reset when grab ends
-        else if (evt.Type == PointerEventType.Unselect)
-        {
-            isOrbGrabbed = false;
-            grabEventFired = false; // Reset for next grab
-            Debug.Log($"✗ Orb released!");
-        }
+        //// Reset when grab ends
+        //else if (evt.Type == PointerEventType.Unselect)
+        //{
+        //    isOrbGrabbed = false;
+        //    grabEventFired = false; // Reset for next grab
+        //    Debug.Log($"✗ Orb released!");
+        //}
     }
 }

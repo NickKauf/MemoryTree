@@ -170,6 +170,7 @@ public class VoiceRecorder : MonoBehaviour
             Debug.Log($"Audio clip: {currentRecording.name} (Length: {currentRecording.length:F2}s)");
 
         OnRecordingSaved();
+        GameManager.Instance.onRecordingStop.Invoke();
     }
 
     /// <summary>
@@ -335,6 +336,29 @@ public class VoiceRecorder : MonoBehaviour
         }
 
         Debug.Log("✗ Playback stopped");
+    }
+
+    /// <summary>
+    /// Reset recording state for a new recording session
+    /// </summary>
+    public void ResetRecording()
+    {
+        isRecording = false;
+        isPlaying = false;
+        recordingTimer = 0f;
+        audioSource.Stop();
+
+        if (recordingStatusText != null)
+        {
+            recordingStatusText.text = "Ready to record";
+        }
+
+        if (playbackStatusText != null)
+        {
+            playbackStatusText.text = "Playback";
+        }
+
+        Debug.Log("Recording state reset");
     }
 
     /// <summary>
