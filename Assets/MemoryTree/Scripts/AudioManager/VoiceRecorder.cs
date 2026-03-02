@@ -161,7 +161,7 @@ public class VoiceRecorder : MonoBehaviour
 
         if (recordingStatusText != null)
         {
-            recordingStatusText.text = "✓ Saved!";
+            recordingStatusText.text = "Saved!";
         }
 
         Debug.Log($"Voice recording stopped. Duration: {recordingTimer:F2}s");

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.learnxr.core": "https://github.com/dilmerv/com.learnxr.core.git",
     "com.meta.xr.sdk.all": "83.0.1",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.collab-proxy": "2.11.3",
