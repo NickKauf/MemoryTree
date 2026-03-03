@@ -2,6 +2,7 @@ using UnityEngine.Audio;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 //Credit to Brackeys youtube tutorial on Audio managers, as the majority of this code and learning how to use it was made by him.
 [System.Serializable]
@@ -34,6 +35,7 @@ public class AudioManager : MonoBehaviour
     // Audio clips for different scenarios
     private string starterSound = "starter_scene";
     private string mainSound = "memorytree";
+    private string dialogueOne = "dialogue_one";
 
     // scene names
     private string starterScene = "Starter";
@@ -78,8 +80,16 @@ public class AudioManager : MonoBehaviour
         {
             AudioManager.Instance.StopAll();
             AudioManager.Instance.Play(mainSound); // Play sound for main game scene
+            StartCoroutine(PlayDialogueAfterDelay(dialogueOne, 2f));
         }
     }
+    private IEnumerator PlayDialogueAfterDelay(string soundName, float delaySeconds)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+        AudioManager.Instance.Play(soundName);
+        Debug.Log($"Playing {soundName} after {delaySeconds} second delay");
+    }
+
     private void OnDestroy()
     {
         // Unregister the callback when this object is destroyed

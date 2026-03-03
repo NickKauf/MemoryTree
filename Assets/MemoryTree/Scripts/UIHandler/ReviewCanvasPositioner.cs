@@ -21,6 +21,7 @@ public class ReviewCanvasPositioner : BaseCanvasPositioner
         if (recordCanvas != null)
         {
             recordCanvas.SetActive(false);
+            AudioManager.Instance.Play("dialogue_two");
         }
 
         base.ShowCanvas();

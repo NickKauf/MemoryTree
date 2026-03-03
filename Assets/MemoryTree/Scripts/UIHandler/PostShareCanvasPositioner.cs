@@ -11,6 +11,7 @@ public class PostShareCanvasPositioner : BaseCanvasPositioner
         if (reviewCanvas != null)
         {
             reviewCanvas.SetActive(false);
+            AudioManager.Instance.Play("dialogue_three");
         }
 
         base.ShowCanvas();
