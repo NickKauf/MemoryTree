@@ -9,16 +9,16 @@ public class OrbInteractable : MonoBehaviour
     public bool isOrbGrabbed = false;
     private bool grabEventFired = false;
 
-    // Unique identifier for this orb instance
+    // every orb has a unique identifier (for this orb instance)
     private string orbId;
     public string OrbId => orbId;
 
-    // Store the memory data when shared
+    // store the memory data when shared
     public MemoryData memoryData { get; private set; }
 
     private void Awake()
     {
-        // Generate unique ID for this orb instance
+        // generate unique ID for this orb instance
         orbId = Guid.NewGuid().ToString().Substring(0, 8);
 
         if (handGrabInteractable == null)
@@ -79,9 +79,7 @@ public class OrbInteractable : MonoBehaviour
         //}
     }
 
-    /// <summary>
-    /// Attach memory data to this orb before sharing
-    /// </summary>
+    // Attach memory data to this orb before sharing
     public void SetMemoryData(MemoryData data)
     {
         memoryData = data;
@@ -93,9 +91,7 @@ public class OrbInteractable : MonoBehaviour
         return memoryData;
     }
 
-    /// <summary>
-    /// Destroy this orb (called after sharing when moving to WorldTree scene)
-    /// </summary>
+    // Destroy this orb (called after sharing when moving to WorldTree scene)
     public void DestroyOrb()
     {
         Debug.Log($"Destroying orb {orbId}");

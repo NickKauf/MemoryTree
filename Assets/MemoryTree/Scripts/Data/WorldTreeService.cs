@@ -7,9 +7,7 @@ public class WorldTreeService : MonoBehaviour
     [SerializeField] private string worldTreeApiUrl = "https://your-worldtree-api.com/api/memories";
     [SerializeField] private bool useLocalTesting = true;
 
-    /// <summary>
-    /// Upload memory to World Tree
-    /// </summary>
+    // memory uploaded  to World Tree
     public void UploadMemory(MemoryData memoryData, string orbId)
     {
         if (memoryData == null)
@@ -30,7 +28,7 @@ public class WorldTreeService : MonoBehaviour
             yield return new WaitForSeconds(1f);
             Debug.Log($"[LOCAL TEST] Successfully 'uploaded' memory from orb {orbId}: {memoryData.audioFileName}");
 
-            // Add to GameManager's shared memories collection
+            // add to GameManager's shared memories collection
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.AddSharedMemory(memoryData);
@@ -39,14 +37,14 @@ public class WorldTreeService : MonoBehaviour
             yield break;
         }
 
-        // Check if file exists
+        // check if file exists
         if (!File.Exists(memoryData.recordingFilePath))
         {
             Debug.LogError($"Recording file not found: {memoryData.recordingFilePath}");
             yield break;
         }
 
-        // Read the audio file
+        // read the audio file
         byte[] audioData = File.ReadAllBytes(memoryData.recordingFilePath);
 
         Debug.Log($"Ready to upload {audioData.Length} bytes to World Tree with orb ID: {orbId}");

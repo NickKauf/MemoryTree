@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class ReviewAndShareHandler : MonoBehaviour
 {
     [Header("Buttons")]
-    [SerializeField] private Button tryAgainButton;        // On Review UI
-    [SerializeField] private Button shareButton;           // On Review UI
-    [SerializeField] private Button recordAnotherButton;   // On Post-Share UI (Optional)
-    [SerializeField] private Button viewWorldTreeButton;   // On Post-Share UI
+    [SerializeField] private Button tryAgainButton;        
+    [SerializeField] private Button shareButton;           
+    [SerializeField] private Button recordAnotherButton; 
+    [SerializeField] private Button viewWorldTreeButton; 
 
     [Header("Canvas Positioners")]
     [SerializeField] private BaseCanvasPositioner recordCanvasPositioner;
@@ -29,7 +29,7 @@ public class ReviewAndShareHandler : MonoBehaviour
         if (tryAgainButton != null) tryAgainButton.onClick.AddListener(OnTryAgainClicked);
         if (shareButton != null) shareButton.onClick.AddListener(OnShareClicked);
         if (viewWorldTreeButton != null) viewWorldTreeButton.onClick.AddListener(OnViewWorldTreeClicked);
-        if (recordAnotherButton != null) recordAnotherButton.onClick.AddListener(OnTryAgainClicked); // Reuses the same logic!
+        if (recordAnotherButton != null) recordAnotherButton.onClick.AddListener(OnTryAgainClicked);
 
         // Auto-find services if not assigned
         if (worldTreeService == null) worldTreeService = FindObjectOfType<WorldTreeService>();
@@ -40,14 +40,10 @@ public class ReviewAndShareHandler : MonoBehaviour
     {
         Debug.Log("Resetting for new recording...");
 
-        // 1. Reset voice recorder if necessary
-        // if (voiceRecorder != null) voiceRecorder.ResetRecording(); // Ensure this method exists in your VoiceRecorder
 
-        // 2. Hide the other two canvases
         if (reviewCanvasPositioner != null) reviewCanvasPositioner.HideCanvas();
         if (postShareCanvasPositioner != null) postShareCanvasPositioner.HideCanvas();
 
-        // 3. Show and position the Record canvas
         if (recordCanvasPositioner != null)
         {
             recordCanvasPositioner.ShowCanvas();
@@ -93,13 +89,11 @@ public class ReviewAndShareHandler : MonoBehaviour
 
     private void ShowPostSharePanel()
     {
-        // Use the new positioner to show the 3rd UI (it will automatically hide the 2nd UI)
         if (postShareCanvasPositioner != null)
         {
             postShareCanvasPositioner.ShowCanvas();
         }
 
-        // Update status text
         if (postShareStatusText != null)
         {
             postShareStatusText.text = "Memory shared to World Tree!";

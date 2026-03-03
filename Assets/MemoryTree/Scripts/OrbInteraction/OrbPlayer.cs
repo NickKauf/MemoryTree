@@ -23,7 +23,6 @@ public class OrbPlayer : MonoBehaviour
 
         audioSource.playOnAwake = false;
 
-        // Temporarily set to 0 (2D audio) so it plays loudly in your ears regardless of distance
         audioSource.spatialBlend = 0f;
     }
 
@@ -48,7 +47,7 @@ public class OrbPlayer : MonoBehaviour
 
     private IEnumerator LoadAudioFile(string filePath)
     {
-        // The magic bullet for Android/Quest local file loading
+        // for Android/Quest local file loading
         string fileUrl = new System.Uri(filePath).AbsoluteUri;
 
         SpatialLogger.Instance.LogError($"URI: {fileUrl}");

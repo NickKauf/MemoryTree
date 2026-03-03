@@ -83,9 +83,7 @@ public class VoiceRecorder : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Update playback progress text with countdown
-    /// </summary>
+    // playback progress text with countdown
     void UpdatePlaybackText()
     {
         if (playbackStatusText == null || currentRecording == null)
@@ -102,9 +100,6 @@ public class VoiceRecorder : MonoBehaviour
         playbackStatusText.text = $"Time Left: {remainingMinutes:D2}:{remainingSeconds:D2}";
     }
 
-    /// <summary>
-    /// Toggle recording start/stop
-    /// </summary>
     public void ToggleRecording()
     {
         if (isRecording) StopRecording();
@@ -173,12 +168,10 @@ public class VoiceRecorder : MonoBehaviour
         GameManager.Instance.onRecordingStop.Invoke();
     }
 
-    /// <summary>
-    /// Trim AudioClip to only include recorded samples
-    /// </summary>
+    // trim AudioClip to only include recorded samples
     AudioClip TrimAudioClip(AudioClip clip, int sampleCount)
     {
-        // Create a new AudioClip with only the recorded samples
+        // new AudioClip with only the recorded samples
         AudioClip trimmedClip = AudioClip.Create(
             clip.name + "_trimmed",
             sampleCount,
@@ -187,11 +180,11 @@ public class VoiceRecorder : MonoBehaviour
             false
         );
 
-        // Get only the recorded audio data
+        // get only the recorded audio data
         float[] samples = new float[sampleCount * clip.channels];
         clip.GetData(samples, 0);
 
-        // Set the data on the new clip
+        // set the data on the new clip
         trimmedClip.SetData(samples, 0);
 
         Debug.Log($"Trimmed clip from {clip.length:F2}s to {trimmedClip.length:F2}s");
@@ -214,9 +207,6 @@ public class VoiceRecorder : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Save recording to persistent local storage
-    /// </summary>
     void SaveRecordingLocally()
     {
         if (currentRecording == null) return;
@@ -243,9 +233,8 @@ public class VoiceRecorder : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Convert AudioClip to WAV byte array
-    /// </summary>
+    // Convert AudioClip to WAV byte array conversion
+
     byte[] AudioClipToWav(AudioClip clip)
     {
         float[] samples = new float[clip.samples * clip.channels];
@@ -254,7 +243,6 @@ public class VoiceRecorder : MonoBehaviour
         int dataSize = samples.Length * 2;
         byte[] wavFile = new byte[44 + dataSize];
 
-        // WAV header
         Array.Copy(System.Text.Encoding.ASCII.GetBytes("RIFF"), 0, wavFile, 0, 4);
         BitConverter.GetBytes(36 + dataSize).CopyTo(wavFile, 4);
         Array.Copy(System.Text.Encoding.ASCII.GetBytes("WAVE"), 0, wavFile, 8, 4);
@@ -281,9 +269,6 @@ public class VoiceRecorder : MonoBehaviour
         return wavFile;
     }
 
-    /// <summary>
-    /// Play the current recording
-    /// </summary>
     public void PlayRecording()
     {
         if (currentRecording == null)
@@ -316,9 +301,6 @@ public class VoiceRecorder : MonoBehaviour
         Debug.Log($"Playing recording ({currentRecording.length:F2}s)");
     }
 
-    /// <summary>
-    /// Stop playback
-    /// </summary>
     public void StopPlayback()
     {
         if (!isPlaying)
@@ -338,9 +320,6 @@ public class VoiceRecorder : MonoBehaviour
         Debug.Log("✗ Playback stopped");
     }
 
-    /// <summary>
-    /// Reset recording state for a new recording session
-    /// </summary>
     public void ResetRecording()
     {
         isRecording = false;
@@ -361,9 +340,6 @@ public class VoiceRecorder : MonoBehaviour
         Debug.Log("Recording state reset");
     }
 
-    /// <summary>
-    /// Toggle playback start/stop
-    /// </summary>
     public void TogglePlayback()
     {
         if (isPlaying) StopPlayback();

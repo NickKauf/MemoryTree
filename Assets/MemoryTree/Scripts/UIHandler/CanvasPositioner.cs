@@ -16,7 +16,6 @@ public class CanvasPositioner : BaseCanvasPositioner
 
     public override void ShowCanvas()
     {
-        // Hide the recording canvas first
         if (recordCanvas != null)
         {
             recordCanvas.SetActive(false);
