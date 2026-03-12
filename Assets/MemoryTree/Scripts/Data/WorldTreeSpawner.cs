@@ -1,6 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using LearnXR.Core.Utilities; // Added for SpatialLogger
+using LearnXR.Core.Utilities;
 
 public class WorldTreeSpawner : MonoBehaviour
 {
@@ -11,22 +12,35 @@ public class WorldTreeSpawner : MonoBehaviour
     [Tooltip("The center point where the tree is located")]
     [SerializeField] private Transform treeCenter;
 
-    [Tooltip("How far away from the center the orbs should spawn")]
-    [SerializeField] private float spawnRadius = 2.0f;
+    [Tooltip("How far away from the center the orbs should spawn (0 = at center, 1+ = in a circle)")]
+    [SerializeField] private float spawnRadius = 3.0f; // NOW SERIALIZED
 
     [Tooltip("Height offset from the tree center")]
-    [SerializeField] private float heightOffset = 1.0f;
+    [SerializeField] private float heightOffset = 0f; // NOW SERIALIZED
+
+    [SerializeField] private bool debugVisualization = true;
 
     void Start()
     {
-        if (treeCenter == null) treeCenter = transform;
+        StartCoroutine(InitializeAndSpawn());
+    }
 
+    private IEnumerator InitializeAndSpawn()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (treeCenter == null)
+        {
+            treeCenter = transform;
+            Debug.LogWarning("TreeCenter not assigned, using WorldTreeSpawner's position");
+        }
+
+        Debug.Log($"[WorldTreeSpawner] Tree Center: {treeCenter.position}, Spawn Radius: {spawnRadius}, Height Offset: {heightOffset}");
         SpawnMemories();
     }
 
     private void SpawnMemories()
     {
-        // 1. Check if we have the GameManager and any memories
         if (GameManager.Instance == null)
         {
             SpatialLogger.Instance.LogError("No GameManager found. Are you testing the WorldTree scene directly?");
@@ -43,22 +57,22 @@ public class WorldTreeSpawner : MonoBehaviour
 
         SpatialLogger.Instance.LogInfo($"Spawning {memoriesToSpawn.Count} memory orbs around the World Tree...");
 
-        // 2. Loop through each memory and spawn an orb
         for (int i = 0; i < memoriesToSpawn.Count; i++)
         {
-            // Calculate a circular position using basic trigonometry
-            // This evenly spaces out however many orbs you have in a 360-degree circle
             float angle = i * Mathf.PI * 2 / memoriesToSpawn.Count;
             float x = Mathf.Cos(angle) * spawnRadius;
             float z = Mathf.Sin(angle) * spawnRadius;
 
             Vector3 spawnPosition = treeCenter.position + new Vector3(x, heightOffset, z);
 
-            // Instantiate the orb
+            if (debugVisualization)
+            {
+                Debug.Log($"[Spawn {i}] Position: {spawnPosition}, Distance from tree: {Vector3.Distance(spawnPosition, treeCenter.position):F2}");
+            }
+
             GameObject newOrb = Instantiate(orbPrefab, spawnPosition, Quaternion.identity);
             newOrb.name = $"MemoryOrb_{i}";
 
-            // Pass the memory data to the new orb
             OrbPlayer orbPlayer = newOrb.GetComponent<OrbPlayer>();
             if (orbPlayer != null)
             {
@@ -69,6 +83,36 @@ public class WorldTreeSpawner : MonoBehaviour
             {
                 SpatialLogger.Instance.LogError($"X Orb prefab {newOrb.name} is missing the OrbPlayer script!");
             }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (treeCenter == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(treeCenter.position, 0.2f);
+
+        Gizmos.color = Color.green;
+        DrawCircle(treeCenter.position, spawnRadius, 20);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(treeCenter.position, treeCenter.position + Vector3.up * heightOffset);
+    }
+
+    private void DrawCircle(Vector3 center, float radius, int segments)
+    {
+        if (radius <= 0) return;
+
+        float angleStep = Mathf.PI * 2 / segments;
+        Vector3 lastPoint = center + new Vector3(radius, heightOffset, 0);
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = i * angleStep;
+            Vector3 newPoint = center + new Vector3(Mathf.Cos(angle) * radius, heightOffset, Mathf.Sin(angle) * radius);
+            Gizmos.DrawLine(lastPoint, newPoint);
+            lastPoint = newPoint;
         }
     }
 }
